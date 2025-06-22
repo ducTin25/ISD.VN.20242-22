@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          crossorigin="anonymous">
+    <title>Cloudy Store - Sản phẩm</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .category-list .list-group-item {
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background 0.15s, color 0.15s;
+        }
+        .category-list .list-group-item:hover, .category-list .list-group-item.active {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+        }
+        .product-card {
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            background: #fff;
+            margin-bottom: 28px;
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .product-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(80,80,180,0.13);
+        }
+        .product-img {
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+            object-fit: cover;
+            margin: 0 auto;
+            display: block;
+        }
+        .btn-primary {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .product-title {
+            font-weight: 700;
+            color: #2575fc;
+        }
+        @media (max-width: 991px) {
+            .category-list {
+                margin-bottom: 24px;
+            }
+        }
+        @media (max-width: 576px) {
+            .product-card {
+                padding: 10px 4px;
+            }
+            .product-img {
+                width: 100px !important;
+                height: 100px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="container" style="margin-top: 30px">
+        <div class="row">
+            <div class="col-lg-3 col-md-4 category-list">
+                <h4 class="mb-3"><i class="fas fa-list"></i> Danh mục</h4>
+                <ul class="list-group">
+                    <a th:href="@{/shop}"><li class="list-group-item">Tất cả sản phẩm</li></a>
+                    <a href="" th:each="category, iStat : ${categories}"
+                       th:href="@{/shop/category/{id}(id=${category.id})}">
+                        <li class="list-group-item" th:text="${category.name}"></li>
+                    </a>
+                </ul>
+            </div>
+            <div class="col-lg-9 col-md-8">
+                <div class="row">
+                    <div class="col-md-6 col-lg-4" th:each="product : ${products}">
+                        <div class="card product-card h-100">
+                            <img class="card-img-top product-img mt-3 mb-2"
+                                 style="width: 150px; height: 150px;"
+                                 th:src="@{${'/productImages/' + product.imageName}}"
+                                 th:alt="${product.name}">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title product-title" th:text="${product.name}"></h5>
+                                <h4 class="mb-2">₫ <span th:text="${product.price}"></span></h4>
+                                <p class="card-text" th:text="${product.description}"></p>
+                                <a th:href="@{/shop/viewproduct/{id}(id=${product.id})}" class="btn btn-primary mt-auto"><i class="fas fa-eye"></i> Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:if="${#lists.isEmpty(products)}" class="col-12 text-center mt-5">
+                        <h5>Không có sản phẩm nào.</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+                window.location.href = '/logout';
+            }
+        }
+    </script>
+</body>
+</html>
