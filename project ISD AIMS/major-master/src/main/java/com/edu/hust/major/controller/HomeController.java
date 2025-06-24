@@ -81,36 +81,5 @@ public class HomeController {
         return "index";
     }
 
-    @GetMapping("/shop")
-    public String shop(Model model){
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProduct());
-        return "shop";
-    } //view All Products
-
-    @GetMapping("/shop/category/{id}")
-    public String shopByCat(@PathVariable int id, Model model){
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductByCategoryId(id));
-        return "shop";
-    } //view Products By Category
-
-    @GetMapping("/shop/viewproduct/{id}")
-    public String viewProduct(@PathVariable long id, Model model){
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("product", productService.getProductById(id).get());
-        return "viewProduct";
-    } //view product Details
-    @GetMapping("/shop/search")
-    public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
-    model.addAttribute("cartCount", GlobalData.cart.size());
-    model.addAttribute("categories", categoryService.getAllCategory());
-    model.addAttribute("products", productService.searchProductsByName(keyword));
-    model.addAttribute("keyword", keyword);
-    return "shop";
-    }   
-
 }
 
