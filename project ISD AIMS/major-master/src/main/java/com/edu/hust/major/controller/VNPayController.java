@@ -2,6 +2,7 @@ package com.edu.hust.major.controller;
 
 import com.edu.hust.major.global.GlobalData;
 import com.edu.hust.major.model.Product;
+import com.edu.hust.major.service.ProductService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +20,7 @@ import java.util.*;
 
 @Controller
 public class VNPayController {
-    @Autowired
+    
     @Value("${vnpay.tmnCode}")
     private String vnp_TmnCode;
 
@@ -37,7 +38,7 @@ public class VNPayController {
         try {
             long amount = (long) (GlobalData.cart.stream().mapToDouble(Product::getPrice).sum() * 100);
             String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
-            String vnp_IpAddr = request.getRemoteAddr();
+            String vnp_IpAddr = "127.0.0.1"; // Lấy IP từ request, ví dụ: request.getRemoteAddr()
 
             Map<String, String> vnp_Params = new HashMap<>();
             vnp_Params.put("vnp_Version", "2.1.0");
@@ -52,12 +53,14 @@ public class VNPayController {
             vnp_Params.put("vnp_ReturnUrl", vnp_ReturnUrl);
             vnp_Params.put("vnp_IpAddr", vnp_IpAddr);
 
+            Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddHHmmss");
-            formatter.setTimeZone(TimeZone.getTimeZone("Etc/GMT+7"));
-            Calendar cld = Calendar.getInstance();
-            vnp_Params.put("vnp_CreateDate", formatter.format(cld.getTime()));
+            String vnp_CreateDate = formatter.format(cld.getTime());
+            vnp_Params.put("vnp_CreateDate", vnp_CreateDate);
+
             cld.add(Calendar.MINUTE, 15);
-            vnp_Params.put("vnp_ExpireDate", formatter.format(cld.getTime()));
+            String vnp_ExpireDate = formatter.format(cld.getTime());
+            vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
             List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
             Collections.sort(fieldNames);
@@ -143,4 +146,6 @@ public class VNPayController {
         }
         return hash.toString();
     }
+
+
 }
