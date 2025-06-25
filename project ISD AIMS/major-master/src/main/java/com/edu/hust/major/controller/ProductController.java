@@ -38,9 +38,10 @@ public class ProductController {
 
     // View product detail
     @GetMapping("/viewproduct/{id}")
-    public String viewProduct(@PathVariable long id, Model model) {
-        model.addAttribute("cartCount", GlobalData.cart.size());
+    public String viewProduct(@PathVariable long id,
+            @RequestParam(name = "itemAmount", required = false) Integer amount, Model model) {
         model.addAttribute("product", productService.getProductById(id).orElse(null));
+        model.addAttribute("amount", amount);
         return "viewProduct";
     }
 

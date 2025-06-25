@@ -12,7 +12,8 @@ public class CheckoutController {
     @GetMapping("/checkout")
     public String checkout(Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
+        model.addAttribute("total",
+                GlobalData.cart.stream().mapToDouble(pair -> pair.getKey().getPrice() * pair.getValue()).sum());
         return "checkout";
     }
 }

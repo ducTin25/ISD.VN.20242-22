@@ -20,7 +20,7 @@ import java.util.*;
 
 @Controller
 public class VNPayController {
-    
+
     @Value("${vnpay.tmnCode}")
     private String vnp_TmnCode;
 
@@ -36,7 +36,8 @@ public class VNPayController {
     @GetMapping("/vnpay-payment")
     public String vnpayPayment(HttpServletRequest request, Model model) {
         try {
-            long amount = (long) (GlobalData.cart.stream().mapToDouble(Product::getPrice).sum() * 100);
+            long amount = (long) (GlobalData.cart.stream()
+                    .mapToDouble(pair -> pair.getKey().getPrice() * pair.getValue()).sum() * 100);
             String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
             String vnp_IpAddr = "127.0.0.1"; // Lấy IP từ request, ví dụ: request.getRemoteAddr()
 
@@ -68,7 +69,8 @@ public class VNPayController {
             StringBuilder hashData = new StringBuilder();
             for (String fieldName : fieldNames) {
                 String fieldValue = vnp_Params.get(fieldName);
-                hashData.append(fieldName).append("=").append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString())).append("&");
+                hashData.append(fieldName).append("=")
+                        .append(URLEncoder.encode(fieldValue, StandardCharsets.US_ASCII.toString())).append("&");
             }
             hashData.deleteCharAt(hashData.length() - 1);
 
@@ -98,7 +100,7 @@ public class VNPayController {
     public String vnpayReturn(HttpServletRequest request, Model model) {
         try {
             Map<String, String> fields = new HashMap<>();
-            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements(); ) {
+            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
                 String paramName = params.nextElement();
                 String paramValue = request.getParameter(paramName);
                 fields.put(paramName, paramValue);
@@ -111,7 +113,9 @@ public class VNPayController {
             Collections.sort(fieldNames);
             StringBuilder hashData = new StringBuilder();
             for (String fieldName : fieldNames) {
-                hashData.append(fieldName).append("=").append(URLEncoder.encode(fields.get(fieldName), StandardCharsets.US_ASCII.toString())).append("&");
+                hashData.append(fieldName).append("=")
+                        .append(URLEncoder.encode(fields.get(fieldName), StandardCharsets.US_ASCII.toString()))
+                        .append("&");
             }
             hashData.deleteCharAt(hashData.length() - 1);
 
@@ -122,7 +126,8 @@ public class VNPayController {
                     GlobalData.cart.clear();
                     model.addAttribute("message", "Thanh toán thành công!");
                 } else {
-                    model.addAttribute("message", "Thanh toán thất bại. Mã lỗi: " + request.getParameter("vnp_ResponseCode"));
+                    model.addAttribute("message",
+                            "Thanh toán thất bại. Mã lỗi: " + request.getParameter("vnp_ResponseCode"));
                 }
             } else {
                 model.addAttribute("message", "Xác thực thất bại!");
@@ -146,6 +151,5 @@ public class VNPayController {
         }
         return hash.toString();
     }
-
 
 }
