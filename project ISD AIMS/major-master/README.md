@@ -17,9 +17,11 @@ trưng bày sản phẩm, tạo giỏ hàng, thanh toán hóa đơn
 + quản lí sản phẩm, loại sản phẩm(CRUD)
 + xem sản phẩm, xem chi tiết
 + quản lí giỏ hàng (thêm, xóa)
++ thanh tìm kiếm
 #### Admin section:
 + categories
 + products
++ users
 #### User section:
 + products page
 + products detail
