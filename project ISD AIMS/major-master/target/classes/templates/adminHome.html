@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          crossorigin="anonymous">
+    <title>Admin Home</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .jumbotron {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            border-radius: 18px;
+            margin-top: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+        }
+        .admin-card {
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+            transition: transform 0.15s, box-shadow 0.15s;
+            background: #fff;
+        }
+        .admin-card:hover {
+            transform: translateY(-6px) scale(1.03);
+            box-shadow: 0 8px 24px rgba(80,80,180,0.13);
+        }
+        .admin-card .card-title {
+            font-weight: 700;
+            color: #2575fc;
+        }
+        .admin-card .btn-primary {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+        .admin-card .btn-primary:hover {
+            background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+        }
+        .admin-icon {
+            font-size: 2.5rem;
+            color: #6a11cb;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 991px) {
+            .admin-card {
+                margin-bottom: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}" href="#">
+            <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="auto" height="56" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/admin}"><i class="fas fa-home"></i> Trang admin</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/logout}"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <div class="jumbotron text-center py-5">
+        <h1 class="display-4 mb-3"><i class="fas fa-user-shield"></i> Welcome back, Admin</h1>
+        <p class="lead">Easily manage your data from this <mark style="background:rgba(255,255,255,0.3);color:#fff;">Admin Page</mark></p>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card admin-card text-center p-4">
+                <div class="admin-icon"><i class="fas fa-users"></i></div>
+                <h4 class="card-title">Tài khoản</h4>
+                <p class="card-text">Quản lý tất cả tài khoản người dùng tại đây.</p>
+                <a th:href="@{/admin/users}" class="btn btn-primary btn-block mt-2">Quản lý</a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card admin-card text-center p-4">
+                <div class="admin-icon"><i class="fas fa-list-alt"></i></div>
+                <h4 class="card-title">Danh mục</h4>
+                <p class="card-text">Quản lý tất cả danh mục sản phẩm tại đây.</p>
+                <a th:href="@{/admin/categories}" class="btn btn-primary btn-block mt-2">Quản lý</a>
+            </div>
+        </div>
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card admin-card text-center p-4">
+                <div class="admin-icon"><i class="fas fa-boxes"></i></div>
+                <h4 class="card-title">Sản phẩm</h4>
+                <p class="card-text">Quản lý tất cả sản phẩm tại đây.</p>
+                <a th:href="@{/admin/products}" class="btn btn-primary btn-block mt-2">Quản lý</a>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

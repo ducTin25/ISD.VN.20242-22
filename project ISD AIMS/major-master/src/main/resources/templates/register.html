@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          crossorigin="anonymous">
+    <title>Đăng ký tài khoản</title>
+    <style>
+        body {
+            background: linear-gradient(120deg, #f8fafc 0%, #e0e7ff 100%);
+            min-height: 100vh;
+        }
+        .navbar {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .register-container {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .register-card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.09);
+            padding: 36px 32px 28px 32px;
+            width: 100%;
+            max-width: 450px;
+        }
+        .register-title {
+            font-weight: 700;
+            font-size: 1.7rem;
+            color: #2575fc;
+            margin-bottom: 18px;
+            text-align: center;
+        }
+        .btn-register {
+            background: linear-gradient(120deg, #6a11cb 0%, #2575fc 100%);
+            color: #fff;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 0;
+            transition: background 0.2s;
+        }
+        .btn-register:hover {
+            background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
+            color: #fff;
+        }
+        .form-group label {
+            font-weight: 500;
+        }
+        @media (max-width: 576px) {
+            .register-card {
+                padding: 24px 10px 18px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" th:href="@{/}" href="#">
+            <img th:src="@{/images/logo.png}"  src="../static/images/logo.png" width="auto" height="56" class="d-inline-block align-top" alt=""/>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto"></ul>
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/}"><i class="fas fa-home"></i> Trang chủ</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/shop}"><i class="fas fa-store"></i> Sản phẩm</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="register-container">
+    <div class="register-card">
+        <div class="register-title">
+            <i class="fas fa-user-plus"></i> Đăng ký tài khoản
+        </div>
+        <p class="text-center mb-4">Vui lòng điền thông tin để đăng ký</p>
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label for="firstName"><i class="fas fa-user"></i> Họ</label>
+                <input type="text" name="firstName" id="firstName" required placeholder="Họ của bạn" class="form-control form-control-lg">
+            </div>
+            <div class="form-group">
+                <label for="lastName"><i class="fas fa-user"></i> Tên</label>
+                <input type="text" name="lastName" id="lastName" required placeholder="Tên của bạn" class="form-control form-control-lg">
+            </div>
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email" name="email" id="email"
+                       aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text text-muted">Chúng tôi sẽ không chia sẻ email của bạn cho ai khác.</small>
+            </div>
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Mật khẩu</label>
+                <input type="password" class="form-control form-control-lg" required placeholder="Mật khẩu" name="password"
+                       id="password">
+            </div>
+            <button type="submit" class="btn btn-register btn-block mt-2">Đăng ký</button>
+            <div class="text-center mt-3">
+                <span>Đã có tài khoản? <a class="linkControl" th:href="@{/login}">Đăng nhập</a></span>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light" th:fragment="navbar">
+    <div class="container-fluid">
+        <!-- LOGO -->
+        <a class="navbar-brand d-flex align-items-center" th:href="@{/}">
+            <img th:src="@{/images/logo.png}" src="../static/images/logo.png" width="auto" height="56" class="d-inline-block align-top" alt=""/>
+        </a>
+
+        <!-- THANH TÌM KIẾM -->
+        <form class="form-inline mx-3 d-none d-md-flex" th:action="@{/shop/search}" method="get">
+            <input class="form-control mr-2" type="search" name="keyword" placeholder="Tìm kiếm..." aria-label="Search" style="width: 220px;">
+            <button class="btn btn-outline-primary" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+
+        <!-- BUTTON COLLAPSE MOBILE -->
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- MENU -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/}"><i class="fas fa-home"></i> Trang chủ</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/shop}"><i class="fas fa-store"></i> Sản phẩm</a>
+                </li>
+                <li class="nav-item active" sec:authorize="isAnonymous()">
+                    <a class="nav-link" th:href="@{/login}"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+                </li>
+                <li class="nav-item active" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="#" onclick="confirmLogout(event)">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/cart}"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a>
+                </li>
+                <li class="nav-item active">
+                    <span class="nav-link" th:text="${cartCount}">0</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
