@@ -38,17 +38,18 @@ public class HomeController {
     @Autowired
     ProductService productService;
 
-    @GetMapping({"/", "/home"})
-    public String home(Model model){
+    @GetMapping({ "/", "/home" })
+    public String home(Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
         return "index";
-    } //index
+    } // index
+
     @GetMapping("/users/add")
-    public String updateUser(Model model){
+    public String updateUser(Model model) {
         UserDTO currentUser = new UserDTO();
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails && ((UserDetails) principal).getUsername() != null) {
-            String currentUsername = ((UserDetails)principal).getUsername();
+            String currentUsername = ((UserDetails) principal).getUsername();
             User user = userService.getUserByEmail(currentUsername).get();
             currentUser.setId(user.getId());
             currentUser.setEmail(user.getEmail());
@@ -56,18 +57,19 @@ public class HomeController {
             currentUser.setFirstName(user.getFirstName());
             currentUser.setLastName(user.getLastName());
             List<Integer> roleIds = new ArrayList<>();
-            for (Role item:user.getRoles()) {
+            for (Role item : user.getRoles()) {
                 roleIds.add(item.getId());
             }
             currentUser.setRoleIds(roleIds);
-        }//get current User runtime
+        } // get current User runtime
 
         model.addAttribute("userDTO", currentUser);
         return "userRoleAdd";
     }
+
     @PostMapping("/users/add")
     public String postUserAdd(@ModelAttribute("userDTO") UserDTO userDTO) {
-        //convert dto > entity
+        // convert dto > entity
         User user = new User();
         user.setId(userDTO.getId());
         user.setEmail(userDTO.getEmail());
@@ -82,35 +84,36 @@ public class HomeController {
     }
 
     @GetMapping("/shop")
-    public String shop(Model model){
+    public String shop(Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("products", productService.getAllProduct());
         return "shop";
-    } //view All Products
+    } // view All Products
 
     @GetMapping("/shop/category/{id}")
-    public String shopByCat(@PathVariable int id, Model model){
+    public String shopByCat(@PathVariable int id, Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("categories", categoryService.getAllCategory());
         model.addAttribute("products", productService.getAllProductByCategoryId(id));
         return "shop";
-    } //view Products By Category
+    } // view Products By Category
 
     @GetMapping("/shop/viewproduct/{id}")
-    public String viewProduct(@PathVariable long id, Model model){
-        model.addAttribute("cartCount", GlobalData.cart.size());
+    public String viewProduct(@PathVariable long id,
+            @RequestParam(name = "itemAmount", required = false) Integer itemAmount, Model model) {
         model.addAttribute("product", productService.getProductById(id).get());
+        model.addAttribute("amount", itemAmount);
         return "viewProduct";
-    } //view product Details
+    } // view product Details
+
     @GetMapping("/shop/search")
     public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
-    model.addAttribute("cartCount", GlobalData.cart.size());
-    model.addAttribute("categories", categoryService.getAllCategory());
-    model.addAttribute("products", productService.searchProductsByName(keyword));
-    model.addAttribute("keyword", keyword);
-    return "shop";
-    }   
+        model.addAttribute("cartCount", GlobalData.cart.size());
+        model.addAttribute("categories", categoryService.getAllCategory());
+        model.addAttribute("products", productService.searchProductsByName(keyword));
+        model.addAttribute("keyword", keyword);
+        return "shop";
+    }
 
 }
-

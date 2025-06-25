@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -34,7 +35,7 @@ public class CartController {
     private String vnp_ReturnUrl;
 
     @GetMapping("/cart")
-    public String cartGet(Model model){
+    public String cartGet(Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
         model.addAttribute("cart", GlobalData.cart);
@@ -42,19 +43,24 @@ public class CartController {
     }
 
     @GetMapping("/addToCart/{id}")
-    public String addToCart(@PathVariable int id){
-        GlobalData.cart.add(productService.getProductById(id).get());
-        return "redirect:/shop";
+    public String addToCart(@PathVariable int id, @RequestParam(name = "itemAmount", required = false) Integer amount) {
+        if (amount == null) {
+            GlobalData.cart.add(productService.getProductById(id).get());
+            return "redirect:/shop";
+        } else {
+
+            return "redirect:/cart";
+        }
     }
 
     @GetMapping("/cart/removeItem/{index}")
-    public String cartItemRemove(@PathVariable int index){
+    public String cartItemRemove(@PathVariable int index) {
         GlobalData.cart.remove(index);
         return "redirect:/cart";
     }
 
     @GetMapping("/checkout")
-    public String checkout(Model model){
+    public String checkout(Model model) {
         model.addAttribute("cartCount", GlobalData.cart.size());
         model.addAttribute("total", GlobalData.cart.stream().mapToDouble(Product::getPrice).sum());
         return "checkout";
@@ -66,7 +72,7 @@ public class CartController {
             long amount = (long) (GlobalData.cart.stream().mapToDouble(Product::getPrice).sum() * 100);
             String vnp_TxnRef = String.valueOf(System.currentTimeMillis());
             String vnp_IpAddr = "127.0.0.1"; // Lấy IP từ request, ví dụ: request.getRemoteAddr()
-            
+
             Map<String, String> vnp_Params = new HashMap<>();
             vnp_Params.put("vnp_Version", "2.1.0");
             vnp_Params.put("vnp_Command", "pay");
@@ -88,7 +94,7 @@ public class CartController {
             cld.add(Calendar.MINUTE, 15);
             String vnp_ExpireDate = formatter.format(cld.getTime());
             vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
-            
+
             // Sắp xếp các tham số theo thứ tự alphabet
             List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
             Collections.sort(fieldNames);
@@ -109,7 +115,7 @@ public class CartController {
             if (hashData.length() > 0) {
                 hashData.deleteCharAt(hashData.length() - 1);
             }
-            
+
             // **BƯỚC 2: Tạo chữ ký an toàn**
             String vnp_SecureHash = hmacSHA512(vnp_HashSecret, hashData.toString());
 
@@ -124,7 +130,7 @@ public class CartController {
                     queryUrl.append('&');
                 }
             }
-             // Xóa dấu & ở cuối
+            // Xóa dấu & ở cuối
             if (queryUrl.length() > 0) {
                 queryUrl.deleteCharAt(queryUrl.length() - 1);
             }
@@ -139,14 +145,16 @@ public class CartController {
         }
     }
 
-    // Phương thức vnpay-payment-return của bạn về cơ bản là đúng, 
-    // nhưng cần đảm bảo logic xử lý hashData ở đây phải khớp với logic hashData được gửi đi từ VNPay
-    // Đoạn mã dưới đây là chuẩn và nên hoạt động tốt khi phương thức gửi đi đã đúng.
+    // Phương thức vnpay-payment-return của bạn về cơ bản là đúng,
+    // nhưng cần đảm bảo logic xử lý hashData ở đây phải khớp với logic hashData
+    // được gửi đi từ VNPay
+    // Đoạn mã dưới đây là chuẩn và nên hoạt động tốt khi phương thức gửi đi đã
+    // đúng.
     @GetMapping("/vnpay-payment-return")
     public String vnpayReturn(HttpServletRequest request, Model model) {
         try {
             Map<String, String> fields = new HashMap<>();
-            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements(); ) {
+            for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements();) {
                 String paramName = params.nextElement();
                 String paramValue = request.getParameter(paramName);
                 if ((paramValue != null) && (paramValue.length() > 0)) {
@@ -182,11 +190,13 @@ public class CartController {
 
             if (signValue.equals(vnp_SecureHash)) {
                 if ("00".equals(request.getParameter("vnp_ResponseCode"))) {
-                    // TODO: Xử lý logic sau khi thanh toán thành công (lưu đơn hàng, gửi email, etc.)
+                    // TODO: Xử lý logic sau khi thanh toán thành công (lưu đơn hàng, gửi email,
+                    // etc.)
                     GlobalData.cart.clear(); // Nên xóa giỏ hàng sau khi đã xử lý đơn hàng xong
                     model.addAttribute("message", "Thanh toán thành công!");
                 } else {
-                    model.addAttribute("message", "Thanh toán thất bại hoặc bị hủy. Mã lỗi: " + request.getParameter("vnp_ResponseCode"));
+                    model.addAttribute("message",
+                            "Thanh toán thất bại hoặc bị hủy. Mã lỗi: " + request.getParameter("vnp_ResponseCode"));
                 }
             } else {
                 model.addAttribute("message", "Sai chữ ký xác thực!");

@@ -1,15 +1,16 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
-          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
     <title>Chi tiết sản phẩm</title>
     <style>
         body {
@@ -53,6 +54,11 @@
             background: linear-gradient(120deg, #2575fc 0%, #6a11cb 100%);
         }
 
+        .add-quantity {
+            width: 50px;
+            height: 37px;
+        }
+
         @media (max-width: 576px) {
             .product-detail-card {
                 padding: 18px 8px 14px 8px;
@@ -65,48 +71,84 @@
         }
     </style>
 </head>
+
 <body>
-<div th:replace="fragments/navbar :: navbar"></div>
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="product-detail-card mt-5">
-                <div class="row">
-                    <div class="col-md-5 d-flex justify-content-center align-items-center">
-                        <img class="product-img" style="width: 300px; height: 300px;"
-                             th:src="@{${'/productImages/' + product.imageName}}"
-                             th:alt="${product.name}" alt="Ảnh sản phẩm">
-                    </div>
-                    <div class="col-md-7 mt-4 mt-md-0">
-                        <h2 class="product-title" th:text="${product.name}"></h2>
-                        <p class="mb-1"><strong>Danh mục:</strong> <span th:text="${product.category.name}"></span></p>
-                        <h4 class="mb-3 text-danger">₫ <span th:text="${product.price}"></span></h4>
-                        <h5 class="mb-2">Khối lượng: <span th:text="${product.weight}"></span> gram</h5>
-                        <p th:text="${product.description}"></p>
-                        <a th:href="@{/addToCart/{id}(id=${product.id})}" class="btn btn-primary mt-3"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
-                        <a th:href="@{/shop}" class="btn btn-secondary mt-3 ml-2">Quay lại</a>
+    <div th:replace="fragments/navbar :: navbar"></div>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="product-detail-card mt-5">
+                    <div class="row">
+                        <div class="col-md-5 d-flex justify-content-center align-items-center">
+                            <img class="product-img" style="width: 300px; height: 300px;"
+                                th:src="@{${'/productImages/' + product.imageName}}" th:alt="${product.name}"
+                                alt="Ảnh sản phẩm">
+                        </div>
+                        <div class="col-md-7 mt-4 mt-md-0">
+                            <h2 class="product-title" th:text="${product.name}"></h2>
+                            <p class="mb-1"><strong>Danh mục:</strong> <span th:text="${product.category.name}"></span>
+                            </p>
+                            <h4 class="mb-3 text-danger">₫ <span id="singularValue" th:text="${product.price}"></span>
+                            </h4>
+                            <h5 class="mb-2">Khối lượng: <span th:text="${product.weight}"></span> gram</h5>
+                            <p th:text="${product.description}"></p>
+                            <div class="d-flex align-items-center mt-3">
+                                <a th:if="${amount==null}" th:href="@{/addToCart/{id}(id=${product.id})}"
+                                    class="btn btn-primary"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
+                                <a th:if="${amount!=null}"
+                                    th:href="@{/addToCart/{id}(id=${product.id},itemAmount=${amount})}"
+                                    class="btn btn-primary"><i class="fas fa-cart-plus"></i> Cập nhật số lượng</a>
+                                <button class="btn btn-secondary ml-2" onclick="adjustQuantity(-1)">-</button>
+                                <input th:if="${amount==null}" type="text" id="quantity" value="1" class="add-quantity">
+                                <input th:if="${amount!=null}" type="text" id="quantity" th:value="${amount}"
+                                    class="add-quantity">
+                                <button class="btn btn-secondary" onclick="adjustQuantity(1)">+</button>
+                                <a th:if="${amount==null}" th:href="@{/shop}" class="btn btn-secondary ml-2">Quay
+                                    lại</a>
+                                <a th:if="${amount!=null}" th:href="@{/cart}" class="btn btn-secondary ml-2">Quay
+                                    lại</a>
+                            </div>
+                            <div class="d-flex align-items-center mt-3">
+                                <p>Thành tiền:
+                                    <span th:if="${amount==null}" th:text="${product.price}" id="totalCost"></span>
+                                    <span th:if="${amount!=null}" th:text="${product.price*amount}"
+                                        id="totalCost"></span>₫
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
         integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
         crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
         crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
-<script>
-    function confirmLogout(event) {
-        event.preventDefault();
-        if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
-            window.location.href = '/logout';
+    <script>
+        function confirmLogout(event) {
+            event.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn đăng xuất không?')) {
+                window.location.href = '/logout';
+            }
         }
-    }
-</script>
+    </script>
+    <script>
+        function adjustQuantity(amount) {
+            let input = document.getElementById("quantity");
+            let inputValue = parseInt(input.value);
+            if (inputValue + amount > 0) input.value = inputValue + amount;
+            let total = document.getElementById("totalCost");
+            let singular = document.getElementById("singularValue");
+            total.innerText = (parseFloat(singular.innerText) * (inputValue + amount)).toFixed(2);
+
+        }
+    </script>
 </body>
+
 </html>
