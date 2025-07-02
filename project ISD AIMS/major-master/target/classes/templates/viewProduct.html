@@ -85,19 +85,21 @@
                                 alt="Ảnh sản phẩm">
                         </div>
                         <div class="col-md-7 mt-4 mt-md-0">
-                            <h2 class="product-title" th:text="${product.name}"></h2>
+                            <h2 class="product-title" th:text="${product.name}">
+                            </h2>
                             <p class="mb-1"><strong>Danh mục:</strong> <span th:text="${product.category.name}"></span>
                             </p>
                             <h4 class="mb-3 text-danger">₫ <span id="singularValue" th:text="${product.price}"></span>
                             </h4>
                             <h5 class="mb-2">Khối lượng: <span th:text="${product.weight}"></span> gram</h5>
                             <p th:text="${product.description}"></p>
+                            <input type="hidden" id="product" th:value="${product.id}">
                             <div class="d-flex align-items-center mt-3">
-                                <a th:if="${amount==null}" th:href="@{/addToCart/{id}(id=${product.id})}"
-                                    class="btn btn-primary"><i class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</a>
-                                <a th:if="${amount!=null}"
-                                    th:href="@{/addToCart/{id}(id=${product.id},itemAmount=${amount})}"
-                                    class="btn btn-primary"><i class="fas fa-cart-plus"></i> Cập nhật số lượng</a>
+                                <button th:if="${amount==null}" onclick="addItem()" class="btn btn-primary"><i
+                                        class="fas fa-cart-plus"></i> Thêm vào giỏ hàng</button>
+                                <button th:if="${amount!=null}" onclick="adjItem()" class="btn btn-primary"><i
+                                        class="fas fa-cart-plus"></i>
+                                    Cập nhật số lượng</button>
                                 <button class="btn btn-secondary ml-2" onclick="adjustQuantity(-1)">-</button>
                                 <input th:if="${amount==null}" type="text" id="quantity" value="1" class="add-quantity">
                                 <input th:if="${amount!=null}" type="text" id="quantity" th:value="${amount}"
@@ -147,6 +149,22 @@
             let singular = document.getElementById("singularValue");
             total.innerText = (parseFloat(singular.innerText) * (inputValue + amount)).toFixed(2);
 
+        }
+    </script>
+    <script>
+        function addItem() {
+            let productId = document.getElementById("product").value;
+            let amount = document.getElementById("quantity").value;
+            let url = `/addToCart/${productId}?itemAmount=${amount}&from=0`;
+            window.location.href = url;
+        }
+    </script>
+    <script>
+        function adjItem() {
+            let productId = document.getElementById("product").value;
+            let amount = document.getElementById("quantity").value;
+            let url = `/addToCart/${productId}?itemAmount=${amount}&from=1`;
+            window.location.href = url;
         }
     </script>
 </body>

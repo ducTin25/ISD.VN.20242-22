@@ -9,10 +9,13 @@ import java.util.Collection;
 import java.util.List;
 
 public class CustomUserDetail extends User implements UserDetails {
-
-    public CustomUserDetail(User user){
+    public CustomUserDetail(User user) {
         super(user);
-    }//ke thua lai model user
+    }// ke thua lai model user
+
+    public Integer getId() {
+        return id;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -20,17 +23,18 @@ public class CustomUserDetail extends User implements UserDetails {
         super.getRoles().forEach(role -> {
             authorityList.add(new SimpleGrantedAuthority(role.getName()));
         });
-//        code tuong duong:
-//        for (Role role: super.getRoles()) {
-//            authorityList.add(new SimpleGrantedAuthority(role.getName()));
-//        }
+        // code tuong duong:
+        // for (Role role: super.getRoles()) {
+        // authorityList.add(new SimpleGrantedAuthority(role.getName()));
+        // }
         return authorityList;
-    } //load menu role cho GrantedAuthority
+    } // load menu role cho GrantedAuthority
 
     @Override
     public String getUsername() {
         return super.getEmail();
     }
+
     @Override
     public String getPassword() {
         return super.getPassword();

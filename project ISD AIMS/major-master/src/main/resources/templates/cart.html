@@ -108,7 +108,7 @@
                                     <div class="col-md-5 col-lg-3 col-xl-3">
                                         <div class="mb-3 mb-md-0">
                                             <img class="img-fluid w-100 cart-product-img"
-                                                th:src="@{${'/productImages/' + item.imageName}}"
+                                                th:src="@{${'/productImages/' + item.key.imageName}}"
                                                 src="https://mdbootstrap.com/img/Photos/Horizontal/E-commerce/Vertical/12a.jpg"
                                                 alt="Sample">
                                         </div>
@@ -117,18 +117,18 @@
                                         <div>
                                             <div class="d-flex justify-content-between">
                                                 <div>
-                                                    <h5 th:text="${item.name}">Tên sản phẩm</h5>
+                                                    <h5 th:text="${item.key.name}">Tên sản phẩm</h5>
                                                     <p class="mb-2 text-uppercase small">Khối lượng: <span
-                                                            th:text="${item.weight}"></span> gram</p>
+                                                            th:text="${item.key.weight}"></span> gram</p>
                                                     <p class="mb-2 text-uppercase small">Đơn giá: <span
-                                                            th:text="${item.price}"></span> ₫</p>
+                                                            th:text="${item.key.price}"></span> ₫</p>
                                                     <p class="mb-2 text-uppercase small">Số lượng: <span
-                                                            th:text="${3}"></span></p>
+                                                            th:text="${item.value}"></span></p>
                                                 </div>
                                             </div>
                                             <div class="mt-4 d-flex justify-content-between align-items-center">
                                                 <div>
-                                                    <a th:href="@{/shop/viewproduct/{id}(id=${item.id},itemAmount=3)}"
+                                                    <a th:href="@{/shop/viewproduct/{id}(id=${item.key.id},itemAmount=${item.value})}"
                                                         type="button" class="btn detail-btn small mr-3">
                                                         Xem chi tiết
                                                     </a>
@@ -138,7 +138,8 @@
                                                     </a>
                                                 </div>
                                                 <p class="mb-0"><span><strong>₫<span
-                                                                th:text="${item.price*3}"></span></strong></span></p>
+                                                                th:text="${item.key.price*item.value}"></span></strong></span>
+                                                </p>
                                             </div>
                                         </div>
                                     </div>

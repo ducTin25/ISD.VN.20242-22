@@ -2,14 +2,21 @@ package com.edu.hust.major.controller;
 
 import com.edu.hust.major.dto.UserDTO;
 import com.edu.hust.major.global.GlobalData;
+import com.edu.hust.major.model.Cart;
 import com.edu.hust.major.model.Product;
 import com.edu.hust.major.model.Role;
 import com.edu.hust.major.model.User;
+import com.edu.hust.major.model.CustomUserDetail;
+import com.edu.hust.major.service.CartService;
 import com.edu.hust.major.service.CategoryService;
 import com.edu.hust.major.service.ProductService;
 import com.edu.hust.major.service.RoleService;
 import com.edu.hust.major.service.UserService;
+
+import javafx.util.Pair;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,8 +45,23 @@ public class HomeController {
     @Autowired
     ProductService productService;
 
+    @Autowired
+    CartService cartService;
+
     @GetMapping({ "/", "/home" })
     public String home(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof CustomUserDetail) {
+            CustomUserDetail userDetails = (CustomUserDetail) auth.getPrincipal();
+            Integer userId = userDetails.getId();
+            System.out.println("ID=" + userId);
+            List<Cart> cart = userId != null ? cartService.getAllItemInCart(userId) : null;
+            if (cart != null) {
+                for (Cart item : cart) {
+                    GlobalData.cart.add(new Pair<Product, Integer>(item.getProduct(), item.getQuantity()));
+                }
+            }
+        }
         model.addAttribute("cartCount", GlobalData.cart.size());
         return "index";
     } // index
@@ -81,39 +103,6 @@ public class HomeController {
 
         userService.updateUser(user);
         return "index";
-    }
-
-    @GetMapping("/shop")
-    public String shop(Model model) {
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProduct());
-        return "shop";
-    } // view All Products
-
-    @GetMapping("/shop/category/{id}")
-    public String shopByCat(@PathVariable int id, Model model) {
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.getAllProductByCategoryId(id));
-        return "shop";
-    } // view Products By Category
-
-    @GetMapping("/shop/viewproduct/{id}")
-    public String viewProduct(@PathVariable long id,
-            @RequestParam(name = "itemAmount", required = false) Integer itemAmount, Model model) {
-        model.addAttribute("product", productService.getProductById(id).get());
-        model.addAttribute("amount", itemAmount);
-        return "viewProduct";
-    } // view product Details
-
-    @GetMapping("/shop/search")
-    public String searchProducts(@RequestParam("keyword") String keyword, Model model) {
-        model.addAttribute("cartCount", GlobalData.cart.size());
-        model.addAttribute("categories", categoryService.getAllCategory());
-        model.addAttribute("products", productService.searchProductsByName(keyword));
-        model.addAttribute("keyword", keyword);
-        return "shop";
     }
 
 }
