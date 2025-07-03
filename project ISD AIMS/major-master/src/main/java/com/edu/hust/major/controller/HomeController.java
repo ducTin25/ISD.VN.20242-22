@@ -50,6 +50,7 @@ public class HomeController {
 
     @GetMapping({ "/", "/home" })
     public String home(Model model) {
+        GlobalData.cart.clear();
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof CustomUserDetail) {
             CustomUserDetail userDetails = (CustomUserDetail) auth.getPrincipal();
