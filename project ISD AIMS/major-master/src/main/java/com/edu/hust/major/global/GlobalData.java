@@ -4,7 +4,8 @@ import com.edu.hust.major.model.Product;
 
 import java.util.ArrayList;
 import java.util.List;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
+
 
 public class GlobalData {
     // tao bien toan cuc

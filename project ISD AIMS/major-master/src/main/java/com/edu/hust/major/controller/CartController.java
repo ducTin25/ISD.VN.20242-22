@@ -19,7 +19,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import javafx.util.Pair;
+import org.apache.commons.lang3.tuple.Pair;
+
 
 @Controller
 public class CartController {
@@ -47,15 +48,15 @@ public class CartController {
         }
         if (from) {
             GlobalData.cart.remove(i);
-            GlobalData.cart.add(new Pair<>(productService.getProductById(id).get(), amount));
+            GlobalData.cart.add(Pair.of(productService.getProductById(id).get(), amount));
             return "redirect:/cart";
         } else if (i < GlobalData.cart.size()) {
             int inCart = GlobalData.cart.get(i).getValue();
             GlobalData.cart.remove(i);
-            GlobalData.cart.add(new Pair<>(productService.getProductById(id).get(), amount + inCart));
+            GlobalData.cart.add(Pair.of(productService.getProductById(id).get(), amount + inCart));
             return "redirect:/shop";
         } else {
-            GlobalData.cart.add(new Pair<>(productService.getProductById(id).get(), amount));
+            GlobalData.cart.add(Pair.of(productService.getProductById(id).get(), amount));
             return "redirect:/shop";
         }
     }
