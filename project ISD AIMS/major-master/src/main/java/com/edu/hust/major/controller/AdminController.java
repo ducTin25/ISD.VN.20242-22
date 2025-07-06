@@ -214,6 +214,21 @@ public class AdminController {
         }else {
             return "404";
         }
+    @GetMapping("/admin/orders")
+    public String listOrders(Model model) {
+        model.addAttribute("orders", orderRepository.findAll());
+        return "orders";
+    }
+
+    @PostMapping("/admin/orders/update-status/{id}")
+    public String updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+        Order order = orderRepository.findById(id).orElse(null);
+        if (order != null) {
+            order.setStatus(status);
+            orderRepository.save(order);
+        }
+        return "redirect:/admin/orders";
+    }
 
     }//form edit product, fill old data into form
 }
